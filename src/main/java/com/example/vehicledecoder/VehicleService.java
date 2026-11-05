@@ -15,9 +15,12 @@ public class VehicleService {
 
 	{
 
-		return vehicleRepository.findByVin(vin)
-				.orElseThrow(() -> new RuntimeException("Vehicle not found:" + vin));
-		
+		return vehicleRepository.findByVin(vin).orElseThrow(() -> new VehicleNotFoundException("Vehicle not found:" + vin));
+
+	}
+
+	public Vehicle saveVehicle(Vehicle vehicle) {
+		return vehicleRepository.save(vehicle);
 	}
 
 }
