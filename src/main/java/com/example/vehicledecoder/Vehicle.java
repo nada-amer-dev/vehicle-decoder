@@ -5,6 +5,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 public class Vehicle {
@@ -12,13 +14,14 @@ public class Vehicle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@NotBlank(message = "Vin cannot be blank")
+	@Pattern(regexp = "^[A-HJ-NPR-Z0-9]{17}$", message = "VIN must be 17 characters: digits and capital letters, without I, O or Q")
 	@Column(nullable = false, unique = true, length = 17)
 	private String vin;
 
 	private String make;
 
-		
 	private String model;
 
 	@Column(name = "model_year", nullable = false)

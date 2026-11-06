@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/vehicles")
 public class VehicleController {
@@ -25,7 +27,8 @@ public class VehicleController {
 	}
 
 	@PostMapping
-	public Vehicle createVehicle(@RequestBody Vehicle vehicle) {
+	public Vehicle createVehicle(@Valid @RequestBody Vehicle vehicle) {
 		return vehicleService.saveVehicle(vehicle);
 	}
+
 }

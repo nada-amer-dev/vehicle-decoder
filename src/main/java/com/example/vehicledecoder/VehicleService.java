@@ -15,11 +15,16 @@ public class VehicleService {
 
 	{
 
-		return vehicleRepository.findByVin(vin).orElseThrow(() -> new VehicleNotFoundException("Vehicle not found:" + vin));
+		return vehicleRepository.findByVin(vin)
+				.orElseThrow(() -> new VehicleNotFoundException("Vehicle not found:" + vin));
 
 	}
 
 	public Vehicle saveVehicle(Vehicle vehicle) {
+		String vin = vehicle.getVin();
+		if (vehicleRepository.findByVin(vin).isPresent()) {
+			throw new VehicleAlreadyExistsException("VIN already exists: " + vin);
+		}
 		return vehicleRepository.save(vehicle);
 	}
 
