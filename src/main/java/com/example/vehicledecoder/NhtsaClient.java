@@ -17,6 +17,10 @@ public class NhtsaClient {
 		NhtsaResponse response = restClient.get().uri("/DecodeVinValues/{vin}?format=json", vin).retrieve()
 				.body(NhtsaResponse.class);
 
+		if (response == null || response.results() == null || response.results().isEmpty()) {
+			throw new VehicleNotFoundException("Could not decode VIN: " + vin);
+		}
+
 		return response.results().get(0);
 	}
 
