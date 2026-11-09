@@ -1,5 +1,6 @@
 package com.example.vehicledecoder;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -39,6 +40,27 @@ class VehicleServiceTest {
 
 		assertSame(vehicle, result);
 		verify(nhtsaClient, never()).decode(any());
+	}
+
+	@Test
+	void decodesAndSavesVehicleWhenVinIsNotSaved() {
+
+		// Arrange
+
+		when(vehicleRepository.findByVin("1HGCM82633A004352")).thenReturn(Optional.empty());
+		when(nhtsaClient.decode("1HGCM82633A004352")).thenReturn(new NhtsaResult("HONDA", "Accord", "2003"));
+		when(vehicleRepository.save(any(Vehicle.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// Act
+		Vehicle result = vehicleService.getVehicleByVin("1HGCM82633A004352");
+
+		// Assert
+		assertEquals("HONDA", result.getMake());
+		assertEquals("Accord", result.getModel());
+		assertEquals(2003, result.getModelYear());
+		assertEquals("1HGCM82633A004352", result.getVin());
+		verify(vehicleRepository).save(any(Vehicle.class));
+
 	}
 
 }
