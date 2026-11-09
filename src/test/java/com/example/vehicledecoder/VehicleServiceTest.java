@@ -2,6 +2,7 @@ package com.example.vehicledecoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -61,6 +62,22 @@ class VehicleServiceTest {
 		assertEquals("1HGCM82633A004352", result.getVin());
 		verify(vehicleRepository).save(any(Vehicle.class));
 
+	}
+
+	@Test
+	void throwsNotFoundWhenNhtsaCannotDecodeVin() {
+		// Arrange
+
+		when(vehicleRepository.findByVin("11111111111111111")).thenReturn(Optional.empty());
+		when(nhtsaClient.decode("11111111111111111")).thenReturn(new NhtsaResult("", "", ""));
+
+		// Act and Assert
+
+		assertThrows(VehicleNotFoundException.class, () -> vehicleService.getVehicleByVin("11111111111111111"));
+
+		// Verify
+
+		verify(vehicleRepository, never()).save(any());
 	}
 
 }
